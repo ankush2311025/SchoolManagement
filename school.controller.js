@@ -32,21 +32,44 @@ const addSchool = async (req, res) => {
  export { addSchool };
 
 
-const getSchool = async (req, res) => {
+ const getSchool = async (req, res) => {
     try {
+        const userLat = parseFloat(req.query.latitude);
+        const userLng = parseFloat(req.query.longitude);
+
+        if (isNaN(userLat) || isNaN(userLng)) {
+            return res.status(400).json({ message: 'Invalid or missing latitude/longitude in query parameters' });
+        }
+
         const query = 'SELECT * FROM schools';
         const [schools] = await connection.query(query);
 
-        const sortedSchools = schools.sort((a, b) => a.name.localeCompare(b.name));
+        const toRadians = degrees => degrees * Math.PI / 180;
+        const calculateDistance = (lat1, lon1, lat2, lon2) => {
+            const R = 6371; 
+            const dLat = toRadians(lat2 - lat1);
+            const dLon = toRadians(lon2 - lon1);
+            const a = Math.sin(dLat / 2) ** 2 +
+                      Math.cos(toRadians(lat1)) * Math.cos(toRadians(lat2)) *
+                      Math.sin(dLon / 2) ** 2;
+            const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+            return R * c; 
+        };
 
-        res.json(sortedSchools);
+        const schoolsWithDistance = schools.map(school => ({
+            ...school,
+            distance: calculateDistance(userLat, userLng, school.latitude, school.longitude)
+        }));
+
+        schoolsWithDistance.sort((a, b) => a.distance - b.distance);
+
+        res.json(schoolsWithDistance);
     } catch (error) {
-        console.error("Get School Error →", error);
-        res.status(500).json({
-            message: 'Error retrieving schools'
-        });
+        console.error("Get School Error →", error.message);
+        res.status(500).json({ message: 'Error retrieving schools', error: error.message });
     }
 };
+
 
 export { getSchool };
 
