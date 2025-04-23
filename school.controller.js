@@ -13,7 +13,7 @@ const addSchool = async (req, res) => {
     }
 
     const query = 'INSERT INTO schools ( name, latitude, longitude, address) VALUES ( ?, ?, ?, ?)';
-     const [result] = await connection.promise().execute(query, [name, latitude, longitude, address]);
+     const [result] = await connection.execute(query, [name, latitude, longitude, address]);
 
 
     
@@ -35,7 +35,7 @@ const addSchool = async (req, res) => {
 const getSchool = async (req, res) => {
     try {
         const query = 'SELECT * FROM schools';
-        const [schools] = await connection.promise().query(query);
+        const [schools] = await connection.query(query);
 
         const sortedSchools = schools.sort((a, b) => a.name.localeCompare(b.name));
 
