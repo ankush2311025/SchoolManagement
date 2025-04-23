@@ -4,13 +4,14 @@ import mysql from "mysql2" ;
 import dotenv from "dotenv";
 import schoolRoutes from './school.route.js';
 
+dotenv.config();
 
 const app = express();
 
 const PORT = process.env.DB_PORT||8000;
 
 app.use(bodyParser.json());
-dotenv.config();
+
 
 const connection = mysql.createConnection({
     host: process.env.DB_HOST,
