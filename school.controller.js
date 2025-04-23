@@ -12,7 +12,7 @@ const addSchool = async (req, res) => {
         return res.status(400).json({message: 'All fields are required!'})
     }
 
-    const query = 'INSERT INTO school ( name, latitude, longitude, address) VALUES ( ?, ?, ?, ?)';
+    const query = 'INSERT INTO schools ( name, latitude, longitude, address) VALUES ( ?, ?, ?, ?)';
      const [result] = await connection.promise().execute(query, [name, latitude, longitude, address]);
 
 
@@ -34,7 +34,7 @@ const addSchool = async (req, res) => {
 
 const getSchool = async (req, res) => {
     try {
-        const query = 'SELECT * FROM school';
+        const query = 'SELECT * FROM schools';
         const [schools] = await connection.promise().query(query);
 
         const sortedSchools = schools.sort((a, b) => a.name.localeCompare(b.name));
