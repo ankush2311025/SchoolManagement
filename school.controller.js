@@ -1,5 +1,5 @@
 import connection from "./index.js";
-import haversine from "haversine";
+
 
 
 const addSchool = async (req, res) => {
