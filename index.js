@@ -29,6 +29,9 @@ const connection = mysql.createConnection({
     console.log('Connected to the database.');
   });
 
+
+
+
   app.use(express.json());
   app.use('/', schoolRoutes);
 
